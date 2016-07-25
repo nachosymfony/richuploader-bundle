@@ -1,0 +1,16 @@
+{
+    "name": "nacholibre/richimage-bundle",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Yoan Arnaudov",
+            "email": "jonidev@gmail.com"
+        }
+    ],
+    "autoload" : {
+        "psr-4" : {
+            "nacholibre\\RichImage\\" : ""
+        }
+    }
+}
