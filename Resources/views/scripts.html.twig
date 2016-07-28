@@ -1,0 +1,102 @@
+<script>
+    $(function() {
+        var sortSelector = $( "#sortable" );
+
+        var form = sortSelector.parents('form');
+
+        function appendImageToSelect(select, id) {
+            select.append('<option value="'+id+'" selected="selected">'+id+'</option>');
+        }
+
+        function refreshSelect() {
+            $('#sortable').each(function(index) {
+                var parent = $(this).parents('.main_sortable_images');
+
+                var select = parent.find('select');
+                select.empty();
+
+                console.log(select);
+                $(this).find('.rich_image_thumb').each(function() {
+                    console.log('here');
+                    var id = $(this).attr('data-id');
+
+                    appendImageToSelect(select, id);
+                });
+            });
+        }
+
+        refreshSelect();
+
+        sortSelector.sortable({
+            placeholder: "ui-state-highlight"
+        });
+
+        sortSelector.disableSelection();
+
+        sortSelector.sortable({
+            update: function(event, ui) {
+                refreshSelect();
+            },
+        });
+
+        $(document).on('click', '.rich_image_thumb .delete', function() {
+            var parentElement = $(this).parent();
+            var id = parentElement.attr('data-id');
+            $(this).parents('.main_sortable_images').find('select option[value='+id+']').remove();
+            parentElement.remove();
+        });
+
+        $('.selectImages').click(function() {
+            $(this).parent().find('.imageUploader').click();
+        });
+
+        $('.imageUploader').on('change', function(e) {
+            console.log(this.files);
+            console.log($('form').serialize());
+            console.log($(this).val());
+            console.log(e);
+
+            var formData = new FormData();
+
+            for (var i = 0; i < this.files.length; i++) {
+                var file = this.files[i];
+                formData.append('file_' + i, file, file.name);
+            }
+
+            var loadingImages = $('<div class="rich_image_thumb loading">Loading..</div>');
+
+            sortSelector.append(loadingImages);
+            sortSelector.sortable('refresh');
+
+            var parentSelect = $(this).parents('.main_sortable_images').find('select');
+
+            $.ajax({
+                type: 'POST',
+                url: '{{ path('nacholibre.rich_image.upload') }}',
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function(data) {
+                    sortSelector.append(data);
+                    $('.rich_image_thumb.loading').remove();
+                    sortSelector.sortable('refresh');
+
+                    var ids = [];
+
+                    $(data, '.rich_image_thumb').each(function(index) {
+                        console.log('here2');
+                        console.log($(this));
+                        var id = $(this).attr('data-id');
+
+                        appendImageToSelect(parentSelect, id);
+                    });
+
+                },
+                error: function(data) {
+                    console.log('error');
+                }
+            });
+        });
+    } );
+</script>

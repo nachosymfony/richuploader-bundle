@@ -1,0 +1,77 @@
+<style>
+    .rich_image_thumb, #sortable .ui-state-highlight {
+        width: 166px;
+        height:166px;
+        padding:3px;
+        border:1px solid #ccc;
+        display:inline-block;
+        vertical-align:top;
+        margin-right:9px;
+        position:relative;
+    }
+
+    #image_uploader {
+        display:none;
+    }
+
+    #sortable {
+        display:inline-block;
+        vertical-align:top;
+    }
+
+    .selectImages {
+        font-size:20px;
+        cursor:pointer;
+        padding-top:19px;
+        vertical-align:top;
+    }
+
+    .selectImages .slog {
+        font-size:13px;
+        color:#007bdb;
+    }
+
+    .rich_image_thumb .move {
+        top: 3px;
+        position: absolute;
+        left: 3px;
+        padding: 4px;
+        font-size: 18px;
+        color: black;
+        background-color: rgba(255, 255, 255, 0.85);
+        cursor:move;
+    }
+
+    .rich_image_thumb .delete {
+        position: absolute;
+        top:0;
+        right: 0px;
+        padding: 4px;
+        font-size: 23px;
+        color: black;
+        background-color: rgba(255, 255, 255, 0.85);
+        cursor:pointer;
+        display:none;
+    }
+
+    .rich_image_thumb.upload {
+        border:2px dashed #ccc;
+    }
+
+    .rich_image_thumb.upload .addI {
+        font-size:60px;
+        color:#ccc;
+    }
+
+    .rich_image_thumb.upload:hover .addI {
+        color:#353535;
+    }
+
+    .rich_image_thumb i:hover {
+        color:#353535;
+    }
+
+    .rich_image_thumb:hover .delete {
+        display:block;
+    }
+</style>
