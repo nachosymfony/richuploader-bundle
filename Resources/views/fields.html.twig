@@ -1,23 +1,36 @@
 {% block rich_image_widget %}
     {% include 'nacholibreRichImageBundle::styles.html.twig' %}
 
-    <div class='main_sortable_images'>
+    <div class='main_sortable_images nacholibre_{{ form.vars.name }} size-{{ form.vars.errors.form.config.options.size }}'>
+        {{ form_errors(form) }}
         <div style='display:none;'>
             {{ block('choice_widget') }}
         </div>
-        <div id="sortable" data-name='{{ form.vars.name }}'>
-            {% include 'nacholibreRichImageBundle::show_image.html.twig' with {images: form.vars.data} %}
+        <div id="sortable" data-name='{{ form.vars.name }}' class='{{ form.vars.name }}'>
+            {% include 'nacholibreRichImageBundle::show_image.html.twig' with {images: form.vars.data, multiple: form.vars.errors.form.config.options.multiple} %}
         </div>
         <div class='rich_image_thumb upload'>
-            <input type="file" name="images" class='imageUploader' id='image_uploader' multiple>
+            <input type="file" name="images" class='imageUploader' id='image_uploader' accept="image/gif, image/jpeg, image/png" {% if form.vars.errors.form.config.options.multiple %}{% endif %}>
             <div class='selectImages text-center'>
-                <span class='addI'>+</span>
-                <div class='slog'>
-                {{ 'add_images' | trans }}
+                {% if multiple %}
+                    <span class='addI'>+</span>
+                    <div class='slog'>
+                    {{ 'add_images' | trans }}
+                    </div>
+                {% else %}
+                    <img src='{{ asset('bundles/nacholibrerichimage/img/upload.png') }}' class='uploadImg' />
+                    <div class='slog'>
+                    {{ 'add_image' | trans }}
                 </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class='message'>
+            <div>
+                <span>!</span> {{ 'changes_after_save' | trans }}
             </div>
         </div>
     </div>
 
-    {% include 'nacholibreRichImageBundle::scripts.html.twig' %}
+    {% include 'nacholibreRichImageBundle::scripts.html.twig' with {name: form.vars.name} %}
 {% endblock %}

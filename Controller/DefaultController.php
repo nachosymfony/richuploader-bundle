@@ -22,6 +22,7 @@ class DefaultController extends Controller {
             $image = new RichImage();
             $image->setImageFile($file);
             $image->setPosition(0);
+            $image->setHooked(false);
 
             $images[] = $image;
 

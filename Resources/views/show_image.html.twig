@@ -2,13 +2,10 @@
 <div class='rich_image_thumb' data-id='{{ image.id }}'>
     <img src='{{ asset('bundles/nacholibrerichimage/img/move.png') }}' class='move' />
     <img src='{{ asset('bundles/nacholibrerichimage/img/delete.png') }}' class='delete' />
-    {#
-    <i class="fa fa-arrows move" aria-hidden="true"></i>
-    <i class="fa fa-trash delete" aria-hidden="true"></i>
-    #}
-    <img src='{{ vich_uploader_asset(image, 'imageFile') | imagine_filter('rich_image_thumb') }}' />
-    {#
-    <input type='hidden' name='product[imgs][id][]' value='{{ image.id }}' />
-    #}
+    <img src='{{ vich_uploader_asset(image, 'imageFile') | imagine_filter('rich_image_thumb') }}' class='mainThumb' />
+
+    <span class='make_main {% if loop.first %}hidden{% endif %}'><img src='{{ asset('bundles/nacholibrerichimage/img/first.png') }}' title='{{ 'make_main' | trans }}' /></span>
+
+    <div class="ribbon-wrapper-green main {% if not loop.first or (multiple is defined and not multiple) %}hidden{% endif %}"><div class="ribbon-green">{{ 'main' | trans }}</div></div>
 </div>
 {% endfor %}

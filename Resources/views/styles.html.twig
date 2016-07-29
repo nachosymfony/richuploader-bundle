@@ -10,6 +10,28 @@
         position:relative;
     }
 
+    .rich_image_thumb img.mainThumb {
+        width:100%;
+    }
+
+    .size-xs .rich_image_thumb, .size-xs #sortable .ui-state-highlight {
+        width: 100px;
+        height: 100px;
+    }
+
+    .size-xs .rich_image_thumb.upload .addI {
+        font-size:40px;
+        line-height: 37px;
+    }
+
+    .size-xs .selectImages {
+        padding-top:0;
+    }
+
+    .size-xs .selectImages .slog {
+        font-size:11px;
+    }
+
     #image_uploader {
         display:none;
     }
@@ -32,7 +54,6 @@
     }
 
     .rich_image_thumb .move {
-        top: 3px;
         position: absolute;
         left: 3px;
         padding: 4px;
@@ -40,6 +61,14 @@
         color: black;
         background-color: rgba(255, 255, 255, 0.85);
         cursor:move;
+
+        width:26px;
+        height:26px;
+        bottom:0;
+    }
+
+    .rich_image_thumb .move:hover {
+        background-color: rgba(255, 255, 255, 1);
     }
 
     .rich_image_thumb .delete {
@@ -52,6 +81,12 @@
         background-color: rgba(255, 255, 255, 0.85);
         cursor:pointer;
         display:none;
+        width:26px;
+        height:26px;
+    }
+
+    .rich_image_thumb .delete:hover {
+        background-color: rgba(255, 255, 255, 1);
     }
 
     .rich_image_thumb.upload {
@@ -73,5 +108,147 @@
 
     .rich_image_thumb:hover .delete {
         display:block;
+    }
+
+    .rich_image_thumb .main.hidden {
+        display:none;
+    }
+
+    .rich_image_thumb .make_main {
+        display:none;
+        position:absolute;
+        font-size:11px;
+        bottom:0;
+        right:0;
+        padding:3px;
+        background-color: #fff;
+        color:black;
+        cursor:pointer;
+        margin-right:1px;
+        margin-bottom:1px;
+        font-weight:bold;
+
+        background-color: rgba(255, 255, 255, 0.85);
+    }
+
+    .rich_image_thumb .make_main img {
+        width:20px;
+    }
+
+    .rich_image_thumb .make_main.hidden {
+        display:none;
+    }
+
+    .rich_image_thumb:hover .make_main {
+        display:block;
+    }
+
+    .rich_image_thumb .make_main:hover {
+        background-color:#fff;
+    }
+
+    .ribbon-wrapper-green {
+        width: 85px;
+        height: 88px;
+        overflow: hidden;
+        position: absolute;
+        top: -3px;
+        left: -3px;
+    }
+
+    .size-xs .ribbon-green {
+        font: bold 11px Sans-Serif;
+        padding: 3px 0;
+        left: -44px;
+        top: 9px;
+        width: 120px;
+    }
+
+    .ribbon-green {
+        font: bold 15px Sans-Serif;
+        color: #333;
+        text-align: center;
+        text-shadow: rgba(255,255,255,0.5) 0px 1px 0px;
+        -webkit-transform: rotate(-45deg);
+        -moz-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        -o-transform: rotate(45deg);
+        position: relative;
+        padding: 7px 0;
+        left: -30px;
+        top: 15px;
+        width: 120px;
+        background-color: #BFDC7A;
+        background-image: -webkit-gradient(linear, left top, left bottom, from(#BFDC7A), to(#8EBF45));
+        background-image: -webkit-linear-gradient(top, #BFDC7A, #8EBF45);
+        background-image: -moz-linear-gradient(top, #BFDC7A, #8EBF45);
+        background-image: -ms-linear-gradient(top, #BFDC7A, #8EBF45);
+        background-image: -o-linear-gradient(top, #BFDC7A, #8EBF45);
+        color: #6a6340;
+        -webkit-box-shadow: 0px 0px 3px rgba(0,0,0,0.3);
+        -moz-box-shadow: 0px 0px 3px rgba(0,0,0,0.3);
+        box-shadow: 0px 0px 3px rgba(0,0,0,0.3)
+    }
+
+    .ribbon-green:before, .ribbon-green:after {
+        content: "";
+        border-top:   3px solid #6e8900;
+        border-left:  3px solid transparent;
+        border-right: 3px solid transparent;
+        position:absolute;
+        bottom: -3px;
+    }
+
+    .ribbon-green:before {
+        left: 0;
+    }
+
+    .ribbon-green:after {
+        right: 0;
+    }
+
+    .main_sortable_images .message {
+        display:none;
+        color:#007bdb;
+        font-size:12px;
+        margin-top:4px;
+    }
+
+    .main_sortable_images .message span {
+        background-color: #007bdb;
+        padding-left:5px;
+        padding-right:5px;
+        color:white;
+        font-size:16px;
+        border-radius:4px;
+    }
+
+    .main_sortable_images .message.visible {
+        display:block;
+    }
+
+    .main_sortable_images .uploadImg {
+        width:32px;
+        font-size:40px;
+        line-height: 37px;
+        margin-top:5px;
+        margin-bottom:5px;
+    }
+
+
+    .main_sortable_images.size-md .uploadImg {
+        margin-top:24px;
+    }
+
+    .size-xs .rich_image_thumb.loading img {
+        position: absolute;
+        left: 22px;
+        top: 20px;
+    }
+
+    .size-md .rich_image_thumb.loading img {
+        position: absolute;
+        top: 52px;
+        left: 53px;
     }
 </style>

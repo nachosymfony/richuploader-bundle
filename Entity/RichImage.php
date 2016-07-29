@@ -48,6 +48,11 @@ class RichImage {
      */
     protected $position;
 
+    /**
+    * @ORM\Column(name="hooked", type="boolean")
+    */
+    protected $hooked;
+
     function __construct() {
     }
 
@@ -93,5 +98,13 @@ class RichImage {
 
     public function getPosition() {
         return $this->position;
+    }
+
+    public function setHooked($hooked) {
+        $this->hooked = $hooked;
+    }
+
+    public function getHooked() {
+        return $this->hooked;
     }
 }

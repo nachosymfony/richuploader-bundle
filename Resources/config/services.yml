@@ -1,6 +1,10 @@
 services:
     nacholibre.rich_image.form:
         class: nacholibre\RichImageBundle\Form\Type\RichImageType
-        arguments: ["@doctrine.orm.entity_manager"]
+        arguments: ["@doctrine.orm.entity_manager", "@service_container"]
         tags:
             - { name: form.type }
+
+    nacholibre.rich_image.service:
+        class: nacholibre\RichImageBundle\Services\RichImageService
+        arguments: ["@doctrine.orm.entity_manager"]

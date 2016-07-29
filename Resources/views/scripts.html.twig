@@ -1,24 +1,39 @@
 <script>
     $(function() {
-        var sortSelector = $( "#sortable" );
+        var prefix = '.nacholibre_' + '{{ name }}';
+        var sortSelector = $( prefix +  " #sortable" );
 
         var form = sortSelector.parents('form');
+
+        var messageSelector = $(prefix + ' .message');
+
+        var multiple = $(prefix + '.main_sortable_images select').attr('multiple') == 'multiple';
+
+        function showMessage() {
+            messageSelector.addClass('visible');
+        }
 
         function appendImageToSelect(select, id) {
             select.append('<option value="'+id+'" selected="selected">'+id+'</option>');
         }
 
         function refreshSelect() {
-            $('#sortable').each(function(index) {
+            sortSelector.each(function(index) {
                 var parent = $(this).parents('.main_sortable_images');
 
                 var select = parent.find('select');
                 select.empty();
 
-                console.log(select);
-                $(this).find('.rich_image_thumb').each(function() {
-                    console.log('here');
+                $(this).find('.rich_image_thumb').each(function(index) {
                     var id = $(this).attr('data-id');
+
+                    if (index == 0 && multiple) {
+                        $(this).find('div.main').removeClass('hidden');
+                        $(this).find('.make_main').addClass('hidden');
+                    } else {
+                        $(this).find('div.main').addClass('hidden');
+                        $(this).find('.make_main').removeClass('hidden');
+                    }
 
                     appendImageToSelect(select, id);
                 });
@@ -28,33 +43,45 @@
         refreshSelect();
 
         sortSelector.sortable({
-            placeholder: "ui-state-highlight"
+            placeholder: "ui-state-highlight",
+            update: function(event, ui) {
+                showMessage();
+
+                refreshSelect();
+            },
+            //revert: true,
         });
 
         sortSelector.disableSelection();
 
-        sortSelector.sortable({
-            update: function(event, ui) {
-                refreshSelect();
-            },
-        });
-
-        $(document).on('click', '.rich_image_thumb .delete', function() {
+        $(document).on('click', prefix + ' .rich_image_thumb .delete', function() {
             var parentElement = $(this).parent();
             var id = parentElement.attr('data-id');
             $(this).parents('.main_sortable_images').find('select option[value='+id+']').remove();
             parentElement.remove();
+
+            showMessage();
+
+            refreshSelect();
         });
 
-        $('.selectImages').click(function() {
+        $(document).on('click', prefix + ' .rich_image_thumb .make_main', function() {
+            var element = $(this).parent().clone(true);
+            $(this).parent().remove();
+
+            sortSelector.prepend(element);
+
+            showMessage();
+
+            refreshSelect();
+        });
+
+        $(prefix + ' .selectImages').click(function() {
             $(this).parent().find('.imageUploader').click();
         });
 
-        $('.imageUploader').on('change', function(e) {
-            console.log(this.files);
-            console.log($('form').serialize());
-            console.log($(this).val());
-            console.log(e);
+        $(prefix + ' .imageUploader').on('change', function(e) {
+            showMessage();
 
             var formData = new FormData();
 
@@ -63,7 +90,13 @@
                 formData.append('file_' + i, file, file.name);
             }
 
-            var loadingImages = $('<div class="rich_image_thumb loading">Loading..</div>');
+            //clear all images, because this is not multiple image upload and only one image is allowed
+            if (!multiple) {
+                $(prefix + '.main_sortable_images select option').remove();
+                sortSelector.html('');
+            }
+
+            var loadingImages = $('<div class="rich_image_thumb loading"><img src="{{ asset("bundles/nacholibrerichimage/img/loading.gif") }}" /></div>');
 
             sortSelector.append(loadingImages);
             sortSelector.sortable('refresh');
@@ -78,15 +111,28 @@
                 contentType: false,
                 processData: false,
                 success: function(data) {
+                    data = $(data);
+                    var currentImagesCount = sortSelector.find('.rich_image_thumb').length;
+
+                    //1 because loading box is added and it counts to 1
+                    if (currentImagesCount <= 1 && multiple) {
+                        console.log('here');
+                        data.find('div.main').removeClass('hidden');
+                        data.find('.make_main').addClass('hidden');
+                    } else {
+                        data.find('div.main').addClass('hidden');
+                        data.find('.make_main').removeClass('hidden');
+                    }
+
+                    showMessage();
+
                     sortSelector.append(data);
-                    $('.rich_image_thumb.loading').remove();
+                    $(prefix + ' .rich_image_thumb.loading').remove();
                     sortSelector.sortable('refresh');
 
                     var ids = [];
 
                     $(data, '.rich_image_thumb').each(function(index) {
-                        console.log('here2');
-                        console.log($(this));
                         var id = $(this).attr('data-id');
 
                         appendImageToSelect(parentSelect, id);
@@ -94,7 +140,8 @@
 
                 },
                 error: function(data) {
-                    console.log('error');
+                    console.log('rich image upload error');
+                    console.log(data);
                 }
             });
         });

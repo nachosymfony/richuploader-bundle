@@ -13,14 +13,16 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class RichImageType extends AbstractType {
-    public function __construct($em) {
+    public function __construct($em, $container) {
         $this->em = $em;
+        $this->container = $container;
 
         $this->options = [
             'class' => 'nacholibre\RichImageBundle\Entity\RichImage',
             'choice_label' => 'id',
             'multiple' => true,
-            'choices' => [],
+            'size' => 'md',
+            'choices' => null,
         ];
     }
 
@@ -32,32 +34,62 @@ class RichImageType extends AbstractType {
         //$builder->resetViewTransformers();
         $em = $this->em;
 
+        //$options = $this->options;
+        //if ($options['multiple'] == false) {
+        //    unset($options['choices']);
+        //}
+
+        //$builder->add('images', 'nacholibre\RichImageBundle\Form\Type\RichImageType', $options);
+
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use($em) {
             $form = $event->getForm();
+
+            $name = $form->getName();
+
             $parent = $form->getParent()->getData();
 
             $submittedImages = $event->getData();
 
             $repo = $em->getRepository('nacholibre\RichImageBundle\Entity\RichImage');
 
-            $images = $parent->getImages();
+            $method = 'get' . ucwords($name);
+            $images = $parent->$method();
             $images->clear();
 
             $choices = [];
 
-            $position = 0;
-            foreach($submittedImages as $imgID) {
-                $img = $repo->findOneById($imgID);
+            $richImageService = $this->container->get('nacholibre.rich_image.service');
+            $richImageService->removeNotUsed();
 
-                $choices[] = $img;
+            if ($submittedImages) {
+                $position = 0;
 
-                if ($img) {
+                if (is_array($submittedImages)) {
+                    foreach($submittedImages as $imgID) {
+                        $img = $repo->findOneById($imgID);
+
+                        $choices[] = $img;
+
+                        if ($img) {
+                            $img->setPosition($position);
+                            $img->setHooked(true);
+                            $images[] = $img;
+                            //$parent->addImage();
+
+                            $em->persist($parent);
+                            $em->persist($img);
+                            $position++;
+                        }
+                    }
+                } else {
+                    $img = $repo->findOneById($submittedImages);
                     $img->setPosition($position);
-                    $parent->addImage($img);
+                    $img->setHooked(true);
+
+                    $images[] = $img;
 
                     $em->persist($parent);
                     $em->persist($img);
-                    $position++;
                 }
             }
 
@@ -66,7 +98,7 @@ class RichImageType extends AbstractType {
             $options = $this->options;
             $options['choices'] = $choices;
 
-            $form->getParent()->add('images', EntityType::class, $options);
+            $form->getParent()->add($name, 'nacholibre\RichImageBundle\Form\Type\RichImageType', $options);
         });
     }
 
@@ -74,7 +106,7 @@ class RichImageType extends AbstractType {
         return EntityType::class;
     }
 
-    public function getName() {
+    public function getBlockPrefix() {
         return 'rich_image';
     }
 }
