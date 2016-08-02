@@ -3,3 +3,4 @@ main: main
 make_main: Make Main
 changes_after_save: Changes will be active after saving.
 add_image: Click here to add image.
+image_required: It's required to add image %s
