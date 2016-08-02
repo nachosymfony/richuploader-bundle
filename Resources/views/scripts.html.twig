@@ -7,22 +7,38 @@
 
         var messageSelector = $(prefix + ' .message');
 
-        var multiple = $(prefix + '.main_sortable_images select').attr('multiple') == 'multiple';
+        var multiple = $(prefix + '.main_sortable_images').attr('data-multiple') == '1';
 
         function showMessage() {
             messageSelector.addClass('visible');
         }
 
-        function appendImageToSelect(select, id) {
-            select.append('<option value="'+id+'" selected="selected">'+id+'</option>');
+        //function appendImageToSelect(select, id) {
+        //    select.append('<option value="'+id+'" selected="selected">'+id+'</option>');
+        //}
+
+        function addImageID(element, id) {
+            var ids = element.val();
+
+            if (ids) {
+                var realIds = ids.split(',');
+            } else {
+                var realIds = [];
+            }
+
+            realIds.push(id);
+            element.val(realIds.join(','));
         }
 
         function refreshSelect() {
             sortSelector.each(function(index) {
                 var parent = $(this).parents('.main_sortable_images');
 
-                var select = parent.find('select');
-                select.empty();
+                //var select = parent.find('select');
+                //select.empty();
+
+                var idsContainer = parent.find('.nacholibre_ids input');
+                idsContainer.val('');
 
                 $(this).find('.rich_image_thumb').each(function(index) {
                     var id = $(this).attr('data-id');
@@ -35,7 +51,8 @@
                         $(this).find('.make_main').removeClass('hidden');
                     }
 
-                    appendImageToSelect(select, id);
+                    addImageID(idsContainer, id);
+                    //appendImageToSelect(select, id);
                 });
             });
         }
@@ -92,7 +109,7 @@
 
             //clear all images, because this is not multiple image upload and only one image is allowed
             if (!multiple) {
-                $(prefix + '.main_sortable_images select option').remove();
+                $(prefix + '.main_sortable_images .nacholibre_ids input').val('');
                 sortSelector.html('');
             }
 
@@ -102,6 +119,8 @@
             sortSelector.sortable('refresh');
 
             var parentSelect = $(this).parents('.main_sortable_images').find('select');
+
+            var idsContainer = $(this).parents('.main_sortable_images').find('.nacholibre_ids input');
 
             $.ajax({
                 type: 'POST',
@@ -135,7 +154,8 @@
                     $(data, '.rich_image_thumb').each(function(index) {
                         var id = $(this).attr('data-id');
 
-                        appendImageToSelect(parentSelect, id);
+                        addImageID(idsContainer, id);
+                        //appendImageToSelect(parentSelect, id);
                     });
 
                 },
