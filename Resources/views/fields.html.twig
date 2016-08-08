@@ -1,5 +1,5 @@
 {% block rich_image_widget %}
-    {% include 'nacholibreRichImageBundle::styles.html.twig' %}
+    {% include 'nacholibreRichUploaderBundle::styles.html.twig' %}
 
     {% set multiple = form.vars.nacholibre_multiple %}
     {% set size = form.vars.nacholibre_size %}
@@ -12,7 +12,7 @@
             {{ block('form_widget') }}
         </div>
         <div id="sortable" data-name='{{ form.vars.name }}' class='{{ form.vars.name }}'>
-            {% include 'nacholibreRichImageBundle::show_image.html.twig' with {images: form.vars.images_data, multiple: multiple} %}
+            {% include 'nacholibreRichUploaderBundle::show_image.html.twig' with {images: form.vars.images_data, multiple: multiple} %}
         </div>
         <div class='rich_image_thumb upload'>
             <input type="file" name="images" class='imageUploader' id='image_uploader' accept="image/gif, image/jpeg, image/png">
@@ -23,7 +23,7 @@
                     {{ 'add_images' | trans }}
                     </div>
                 {% else %}
-                    <img src='{{ asset('bundles/nacholibrerichimage/img/upload.png') }}' class='uploadImg' />
+                    <img src='{{ asset('bundles/nacholibrerichuploader/img/upload.png') }}' class='uploadImg' />
                     <div class='slog'>
                     {{ 'add_image' | trans }}
                 </div>
@@ -37,5 +37,5 @@
         </div>
     </div>
 
-    {% include 'nacholibreRichImageBundle::scripts.html.twig' with {name: form.vars.name} %}
+    {% include 'nacholibreRichUploaderBundle::scripts.html.twig' with {name: form.vars.name} %}
 {% endblock %}

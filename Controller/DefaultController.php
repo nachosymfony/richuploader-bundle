@@ -43,7 +43,7 @@ class DefaultController extends Controller {
         //print_R($_FILES);
         //$data = $request->request->get('file');
 
-        return $this->render('nacholibreRichImageBundle::show_image.html.twig', [
+        return $this->render('nacholibreRichUploaderBundle::show_image.html.twig', [
             'images' => $images,
         ]);
     }

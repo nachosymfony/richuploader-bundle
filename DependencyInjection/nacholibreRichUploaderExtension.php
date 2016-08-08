@@ -1,6 +1,6 @@
 <?php
 
-namespace nacholibre\RichImageBundle\DependencyInjection;
+namespace nacholibre\RichUploaderBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
@@ -13,8 +13,8 @@ use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
  *
  * @link http://symfony.com/doc/current/cookbook/bundles/extension.html
  */
-class nacholibreRichImageExtension extends Extension implements PrependExtensionInterface {
-    protected $formTypeTemplate = 'nacholibreRichImageBundle::fields.html.twig';
+class nacholibreRichUploaderExtension extends Extension implements PrependExtensionInterface {
+    protected $formTypeTemplate = 'nacholibreRichUploaderBundle::fields.html.twig';
 
     /**
      * {@inheritdoc}
