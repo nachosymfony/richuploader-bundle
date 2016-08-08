@@ -3,8 +3,9 @@
 
     {% set multiple = form.vars.nacholibre_multiple %}
     {% set size = form.vars.nacholibre_size %}
+    {% set entity_class = form.vars.nacholibre_entity_class %}
 
-    <div class='main_sortable_images nacholibre_{{ form.vars.name }} size-{{ size }}' data-multiple='{{ multiple }}'>
+    <div class='main_sortable_images nacholibre_{{ form.vars.name }} size-{{ size }}' data-multiple='{{ multiple }}' data-entity='{{ entity_class }}'>
         {{ form_errors(form) }}
 
         <div style=' display:none; ' class='nacholibre_ids'>

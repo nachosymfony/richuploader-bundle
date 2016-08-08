@@ -8,6 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Response;
 
 use nacholibre\RichImageBundle\Entity\RichImage;
+use Doctrine\Common\Annotations\AnnotationReader;
 
 class DefaultController extends Controller {
     /**
@@ -18,8 +19,15 @@ class DefaultController extends Controller {
 
         $images = [];
 
+        $entityClass = $request->get('entityClass');
+
+		$reader = new AnnotationReader();
+		$metaData = $reader->getClassAnnotation(new \ReflectionClass(new $entityClass), 'nacholibre\RichImageBundle\Annotation\RichUploader');
+
+        $config = 123;
+
         foreach($request->files as $file) {
-            $image = new RichImage();
+            $image = new $entityClass;
             $image->setImageFile($file);
             $image->setPosition(0);
             $image->setHooked(false);

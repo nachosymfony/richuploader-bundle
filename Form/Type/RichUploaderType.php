@@ -16,14 +16,12 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
-class RichImageType extends AbstractType {
+class RichUploaderType extends AbstractType {
     public function __construct($em, $container) {
         $this->em = $em;
         $this->container = $container;
 
         $this->options = [
-            //'class' => 'nacholibre\RichImageBundle\Entity\RichImage',
-            //'choice_label' => 'id',
             'multiple' => true,
             'entity_class' => null,
             'size' => 'md',
@@ -39,21 +37,20 @@ class RichImageType extends AbstractType {
     public function finishView(FormView $view, FormInterface $form, array $options) {
         parent::finishView($view, $form, $options);
 
-
         $name = $form->getName();
         $method = 'get' . ucwords($name);
 
         $entity = $form->getParent()->getData();
         $type = get_class($entity->$method());
 
-        $multiple = false;
+        //$multiple = false;
 
-        if ($type != 'nacholibre\RichImageBundle\Form\Type\RichImageType') {
-            $multiple = true;
-        }
+        //if ($type != 'nacholibre\RichImageBundle\Form\Type\RichImageType') {
+        //    $multiple = true;
+        //}
 
         $em = $this->em;
-        $repo = $em->getRepository('nacholibre\RichImageBundle\Entity\RichImage');
+        $repo = $em->getRepository($options['entity_class']);
 
         $images = [];
         $ids = explode(',', $view->vars['data']);
@@ -65,8 +62,9 @@ class RichImageType extends AbstractType {
         }
 
         $view->vars['images_data'] = $images;
-        $view->vars['nacholibre_multiple'] = $multiple;
+        $view->vars['nacholibre_multiple'] = $options['multiple'];
         $view->vars['nacholibre_size'] = $options['size'];
+        $view->vars['nacholibre_entity_class'] = $options['entity_class'];
 
         //foreach($view->children as $child) {
         //    var_dump($child);
@@ -84,7 +82,7 @@ class RichImageType extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options) {
         //$builder->resetViewTransformers();
         $em = $this->em;
-        $repo = $em->getRepository('nacholibre\RichImageBundle\Entity\RichImage');
+        $repo = $em->getRepository($options['entity_class']);
 
         //$options = $this->options;
         //if ($options['multiple'] == false) {

@@ -8,6 +8,7 @@
         var messageSelector = $(prefix + ' .message');
 
         var multiple = $(prefix + '.main_sortable_images').attr('data-multiple') == '1';
+        var entityClass = $(prefix + '.main_sortable_images').attr('data-entity');
 
         function showMessage() {
             messageSelector.addClass('visible');
@@ -121,6 +122,8 @@
             var parentSelect = $(this).parents('.main_sortable_images').find('select');
 
             var idsContainer = $(this).parents('.main_sortable_images').find('.nacholibre_ids input');
+
+            formData.set('entityClass', entityClass);
 
             $.ajax({
                 type: 'POST',
