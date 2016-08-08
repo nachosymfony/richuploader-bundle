@@ -1,6 +1,6 @@
 <?php
 
-namespace nacholibre\RichImageBundle\Services;
+namespace nacholibre\RichUploaderBundle\Services;
 
 class RichImageService {
     function __construct($em) {
@@ -8,6 +8,7 @@ class RichImageService {
     }
 
     public function removeNotUsed() {
+        exit('work here...');
         $em = $this->em;
         $repo = $em->getRepository('nacholibre\RichImageBundle\Entity\RichImage');
 

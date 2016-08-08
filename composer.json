@@ -1,5 +1,5 @@
 {
-    "name": "nacholibre/richimage-bundle",
+    "name": "nacholibre/richuploader-bundle",
     "type": "symfony-bundle",
     "license": "MIT",
     "authors": [
@@ -10,7 +10,7 @@
     ],
     "autoload" : {
         "psr-4" : {
-            "nacholibre\\RichImageBundle\\" : ""
+            "nacholibre\\RichUploaderBundle\\" : ""
         }
     }
 }

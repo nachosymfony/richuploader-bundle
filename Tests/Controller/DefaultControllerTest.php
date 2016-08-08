@@ -1,6 +1,6 @@
 <?php
 
-namespace nacholibre\RichImageBundle\Tests\Controller;
+namespace nacholibre\RichUploaderBundle\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 

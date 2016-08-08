@@ -1,13 +1,12 @@
 <?php
 
-namespace nacholibre\RichImageBundle\Controller;
+namespace nacholibre\RichUploaderBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Response;
 
-use nacholibre\RichImageBundle\Entity\RichImage;
 use Doctrine\Common\Annotations\AnnotationReader;
 
 class DefaultController extends Controller {
@@ -22,7 +21,7 @@ class DefaultController extends Controller {
         $entityClass = $request->get('entityClass');
 
 		$reader = new AnnotationReader();
-		$metaData = $reader->getClassAnnotation(new \ReflectionClass(new $entityClass), 'nacholibre\RichImageBundle\Annotation\RichUploader');
+		$metaData = $reader->getClassAnnotation(new \ReflectionClass(new $entityClass), 'nacholibre\RichUploaderBundle\Annotation\RichUploader');
 
         $config = 123;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace nacholibre\RichImageBundle\Form\Type;
+namespace nacholibre\RichUploaderBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolver;

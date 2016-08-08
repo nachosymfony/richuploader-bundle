@@ -1,6 +1,6 @@
 <?php
 
-namespace nacholibre\RichImageBundle\Annotation;
+namespace nacholibre\RichUploaderBundle\Annotation;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Annotations\Annotation;

@@ -1,6 +1,6 @@
 <?php
 
-namespace nacholibre\RichImageBundle\Model;
+namespace nacholibre\RichUploaderBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
