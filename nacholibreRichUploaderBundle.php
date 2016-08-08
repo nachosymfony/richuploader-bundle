@@ -1,9 +1,9 @@
 <?php
 
-namespace nacholibre\RichImageBundle;
+namespace nacholibre\RichUploaderBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class nacholibreRichImageBundle extends Bundle
+class nacholibreRichUploaderBundle extends Bundle
 {
 }
