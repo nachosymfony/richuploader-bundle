@@ -3,17 +3,11 @@
 namespace nacholibre\RichUploaderBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-
-use Symfony\Component\HttpFoundation\File\File;
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\MappedSuperclass
- * @Vich\Uploadable
  */
-class Image {
+class RichFile {
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -25,17 +19,6 @@ class Image {
     * @ORM\Column(type="string", length=255)
     */
     protected $fileName;
-
-    /**
-     * NOTE: This is not a mapped field of entity metadata, just a simple property.
-     * @Assert\Image(
-     *     maxSize="20M",
-     * )
-     * @Vich\UploadableField(mapping="default", fileNameProperty="fileName")
-     *
-     * @var Image
-     */
-    protected $imageFile;
 
     /**
      * @ORM\Column(type="datetime")
@@ -52,6 +35,16 @@ class Image {
     */
     protected $hooked;
 
+    /**
+    * @ORM\Column(type="string", length=255, nullable=true)
+    */
+    protected $mimeType;
+
+    /**
+    * @ORM\Column(type="string", length=255, nullable=true)
+    */
+    protected $originalFilename;
+
     function __construct() {
     }
 
@@ -64,25 +57,10 @@ class Image {
         return $this->id;
     }
 
-    public function setUpdatedAt($time) {
-        $this->updatedAt = $time;
-    }
-
-    public function getUpdatedAt() {
-        return $this->updatedAt;
-    }
-
-    public function setImageFile(File $image = null) {
-        $this->imageFile = $image;
-        $this->setUpdatedAt(new \Datetime());
-    }
-
-    public function getImageFile() {
-        return $this->imageFile;
-    }
-
     public function setFileName($name) {
         $this->fileName = $name;
+
+        $this->setUpdatedAt(new \Datetime());
 
         return $this;
     }
@@ -105,5 +83,30 @@ class Image {
 
     public function getHooked() {
         return $this->hooked;
+    }
+
+    public function setUpdatedAt($time) {
+        $this->updatedAt = $time;
+    }
+
+    public function getUpdatedAt() {
+        return $this->updatedAt;
+    }
+
+    public function setMimeType($type) {
+        $this->mimeType = $type;
+    }
+
+    public function getMimeType() {
+        return $this->mimeType;
+    }
+
+
+    public function setOriginalFilename($name) {
+        $this->originalFilename = $name;
+    }
+
+    public function getOriginalFilename() {
+        return $this->originalFilename;
     }
 }

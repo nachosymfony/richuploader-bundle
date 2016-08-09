@@ -15,6 +15,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Doctrine\Common\Annotations\AnnotationReader;
 
 class RichUploaderType extends AbstractType {
     public function __construct($em, $container) {
@@ -25,6 +26,7 @@ class RichUploaderType extends AbstractType {
             'multiple' => true,
             'entity_class' => null,
             'size' => 'md',
+            'required' => false,
         ];
 
         $this->multiple = false;
@@ -66,6 +68,19 @@ class RichUploaderType extends AbstractType {
         $view->vars['nacholibre_size'] = $options['size'];
         $view->vars['nacholibre_entity_class'] = $options['entity_class'];
 
+        $reader = new AnnotationReader();
+        $data = $reader->getClassAnnotation(new \ReflectionClass(new $options['entity_class']), 'nacholibre\RichUploaderBundle\Annotation\RichUploader');
+
+        $configName = $data->config;
+
+        $richUploaderConfig = $this->container->getParameter('nacholibre_rich_uploader');
+
+        $config = $richUploaderConfig['mappings'][$configName];
+
+        $view->vars['nacholibre_mime_types'] = $config['mime_types'];
+        $view->vars['nacholibre_max_size'] = $config['max_size'];
+        $view->vars['nacholibre_config_name'] = $configName;
+
         //foreach($view->children as $child) {
         //    var_dump($child);
         //}
@@ -92,168 +107,93 @@ class RichUploaderType extends AbstractType {
         //var_dump($builder);
 
         $builder->addModelTransformer(new CallbackTransformer(
-            function ($imagesAsText) {
-                if (!$imagesAsText) {
+            function ($filesAsText) use ($options) {
+                if (!$filesAsText) {
                     return null;
                 }
 
-                //if ($this->getMultiple() == false) {
-                //    return $imagesAsText->getID();
-                //}
-
-                $newImages = [];
-                foreach($imagesAsText as $img) {
-                    $newImages[] = $img->getID();
+                if ($options['multiple'] == false) {
+                    $file = $filesAsText;
+                    return $file->getID();
                 }
 
-                return implode(',', $newImages);
-            },
-            function ($textAsImages) use ($repo) {
-                $images = [];
-                foreach(explode(',', $textAsImages) as $imgID) {
-                    $img = $repo->findOneById($imgID);
+                $newFiles = [];
+                foreach($filesAsText as $file) {
+                    $newFiles[] = $file->getID();
+                }
 
-                    if ($img) {
-                        $images[] = $img;
+                return implode(',', $newFiles);
+            },
+            function ($textAsFiles) use ($repo, $options) {
+                $files = [];
+
+                foreach(explode(',', $textAsFiles) as $fileID) {
+                    $file = $repo->findOneById($fileID);
+
+                    if ($file) {
+                        $files[] = $file;
                     }
                 }
 
-                //if ($this->getMultiple() == false) {
-                //    if (count($images) > 0) {
-                //        return $images[0];
-                //    } else {
-                //        return null;
-                //    }
-                //}
+                if ($options['multiple'] == false) {
+                    if (count($files) > 0) {
+                        return $files[0];
+                    } else {
+                        return null;
+                    }
+                }
 
-                return $images;
+                return $files;
             }
         ));
 
         //$builder->add('images', 'nacholibre\RichImageBundle\Form\Type\RichImageType', $options);
 
-        $name = $builder->getName();
-        $method = 'get' . ucwords($name);
+        //$name = $builder->getName();
+        //$method = 'get' . ucwords($name);
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use($em, $method) {
-            $entity = $event->getForm()->getParent()->getData();
-            $type = get_class($entity->$method());
+        //$builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use($em, $method) {
+        //    $entity = $event->getForm()->getParent()->getData();
+        //    $type = get_class($entity->$method());
 
-            //if ($type == 'Doctrine\Common\Collections\ArrayCollection' || $type == 'Doctrine\ORM\PersistentCollection') {
-            //    $this->setMultiple(true);
-            //}
+        //    //if ($type == 'Doctrine\Common\Collections\ArrayCollection' || $type == 'Doctrine\ORM\PersistentCollection') {
+        //    //    $this->setMultiple(true);
+        //    //}
 
-            //var_dump($event->getForm()->getParent()->getData());
-            //$form = $event->getForm();
-            //$data = $form->getData();
-            //exit;
-        });
+        //    //var_dump($event->getForm()->getParent()->getData());
+        //    //$form = $event->getForm();
+        //    //$data = $form->getData();
+        //    //exit;
+        //});
 
-        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use($em) {
+        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use($em, $options) {
             $position = 0;
 
-            $images = $event->getForm()->getData();
+            $files = $event->getForm()->getData();
 
             //remove not used images
             $richImageService = $this->container->get('nacholibre.rich_image.service');
-            $richImageService->removeNotUsed();
+            $richImageService->removeNotUsed($options['entity_class']);
 
-            if ($this->getMultiple() == false) {
+            if ($options['multiple'] == false) {
                 return;
             }
 
-            foreach($images as $image) {
-                $image->setPosition($position);
-                $image->setHooked(true);
+            foreach($files as $file) {
+                $file->setPosition($position);
+                $file->setHooked(true);
 
-                $em->persist($image);
+                $em->persist($file);
 
                 $position++;
             }
 
             $em->flush();
         });
-
-        //$builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use($em) {
-        //    $form = $event->getForm();
-
-        //    $form->getParent()->add($form->getName() . '_data', EntityType::class, [
-        //        'mapped' => false,
-        //        'class' => 'nacholibre\RichImageBundle\Entity\RichImage',
-        //        'choice_label' => 'id',
-        //        'multiple' => true,
-        //        'required' => false,
-        //        'choices' => $event->getData(),
-        //    ]);
-
-        //    //var_dump($form);
-        //    //var_dump($form->getData());
-        //    //var_dump(count($event->getData()));
-
-        //    //exit;
-        //});
-        //    $form = $event->getForm();
-
-        //    $name = $form->getName();
-
-        //    $parent = $form->getParent()->getData();
-
-        //    $submittedImages = $event->getData();
-
-        //    $repo = $em->getRepository('nacholibre\RichImageBundle\Entity\RichImage');
-
-        //    $method = 'get' . ucwords($name);
-        //    $images = $parent->$method();
-        //    $images->clear();
-
-        //    $choices = [];
-
-        //    $richImageService = $this->container->get('nacholibre.rich_image.service');
-        //    $richImageService->removeNotUsed();
-
-        //    if ($submittedImages) {
-        //        $position = 0;
-
-        //        if (is_array($submittedImages)) {
-        //            foreach($submittedImages as $imgID) {
-        //                $img = $repo->findOneById($imgID);
-
-        //                $choices[] = $img;
-
-        //                if ($img) {
-        //                    $img->setPosition($position);
-        //                    $img->setHooked(true);
-        //                    $images[] = $img;
-        //                    //$parent->addImage();
-
-        //                    $em->persist($parent);
-        //                    $em->persist($img);
-        //                    $position++;
-        //                }
-        //            }
-        //        } else {
-        //            $img = $repo->findOneById($submittedImages);
-        //            $img->setPosition($position);
-        //            $img->setHooked(true);
-
-        //            $images[] = $img;
-
-        //            $em->persist($parent);
-        //            $em->persist($img);
-        //        }
-        //    }
-
-        //    $em->flush();
-
-        //    $options = $this->options;
-        //    $options['choices'] = $choices;
-
-        //    $form->getParent()->add($name, 'nacholibre\RichImageBundle\Form\Type\RichImageType', $options);
-        //});
     }
 
     public function getParent() {
-        return TextType::class;
+        return HiddenType::class;
     }
 
     public function getBlockPrefix() {

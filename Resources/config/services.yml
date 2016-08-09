@@ -8,3 +8,10 @@ services:
     nacholibre.rich_image.service:
         class: nacholibre\RichUploaderBundle\Services\RichImageService
         arguments: ["@doctrine.orm.entity_manager"]
+
+    app.helper_extension:
+        class: nacholibre\RichUploaderBundle\Twig\HelperExtension
+        public: false
+        arguments: ['@service_container']
+        tags:
+            - { name: twig.extension }

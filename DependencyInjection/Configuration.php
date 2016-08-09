@@ -20,9 +20,55 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('nacholibre_rich_uploader');
 
-        // Here you should define the parameters that are allowed to
-        // configure your bundle. See the documentation linked above for
-        // more information on that topic.
+        $rootNode
+            ->children()
+                ->arrayNode('mappings')
+                    ->isRequired()
+                    ->prototype('array')
+                        ->children()
+                            //->integerNode('max_levels')
+                            //    ->info('Max category levels for the category type.')
+                            //    ->min(1)
+                            //    ->max(3)
+                            //    ->defaultValue(1)
+                            //->end()
+                            ->scalarNode('uri_prefix')
+                                ->info('The url prefix that is before the image name.')
+                                ->cannotBeEmpty()
+                                ->defaultValue('/uploads/richuploader/')
+                            ->end()
+                            ->scalarNode('upload_destination')
+                                ->info('Where to upload files.')
+                                ->cannotBeEmpty()
+                                ->defaultValue('%kernel.root_dir%/../web/uploads/richuploader/')
+                            ->end()
+                            ->arrayNode('mime_types')
+                                ->prototype('scalar')->end()
+                                ->defaultValue(['*'])
+                                ->cannotBeEmpty()
+                            ->end()
+                            ->scalarNode('max_size')
+                                ->info('Max size for uploaded file.')
+                                ->defaultValue('5M')
+                                ->cannotBeEmpty()
+                            ->end()
+                            //->scalarNode('form_class')
+                            //    ->info('Form class used when displaying category in admin. Example: AppBundle\Form\ProductCategoryType')
+                            //    ->defaultValue('')
+                            //->end()
+                            //->enumNode('url_type')
+                            //    ->info('What type of urls to be used when listing category members.')
+                            //    ->values(['slug', 'id', 'slug_id'])
+                            //    ->defaultValue('slug')
+                            //->end()
+                            //->scalarNode('url_prefix')
+                            //    ->info('The prefix used when listing category members.')
+                            //    ->defaultValue('')
+                            //->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end();
 
         return $treeBuilder;
     }

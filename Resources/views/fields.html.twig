@@ -1,38 +1,58 @@
 {% block rich_image_widget %}
-    {% include 'nacholibreRichUploaderBundle::styles.html.twig' %}
+    <div class='form-group'>
+        <label class="control-label" for="product_images">
+            {% if form.vars.label %}
+            {{ form.vars.label }}
+            {% else %}
+            {{ form.vars.name | capitalize }}
+            {% endif %}
+        </label>
 
-    {% set multiple = form.vars.nacholibre_multiple %}
-    {% set size = form.vars.nacholibre_size %}
-    {% set entity_class = form.vars.nacholibre_entity_class %}
+        {% include 'nacholibreRichUploaderBundle::styles.html.twig' %}
 
-    <div class='main_sortable_images nacholibre_{{ form.vars.name }} size-{{ size }}' data-multiple='{{ multiple }}' data-entity='{{ entity_class }}'>
-        {{ form_errors(form) }}
+        {% set multiple = form.vars.nacholibre_multiple %}
+        {% set size = form.vars.nacholibre_size %}
+        {% set entity_class = form.vars.nacholibre_entity_class %}
+        {% set configName = form.vars.nacholibre_config_name %}
 
-        <div style=' display:none; ' class='nacholibre_ids'>
-            {{ block('form_widget') }}
-        </div>
-        <div id="sortable" data-name='{{ form.vars.name }}' class='{{ form.vars.name }}'>
-            {% include 'nacholibreRichUploaderBundle::show_image.html.twig' with {images: form.vars.images_data, multiple: multiple} %}
-        </div>
-        <div class='rich_image_thumb upload'>
-            <input type="file" name="images" class='imageUploader' id='image_uploader' accept="image/gif, image/jpeg, image/png">
-            <div class='selectImages text-center'>
-                {% if multiple %}
-                    <span class='addI'>+</span>
-                    <div class='slog'>
-                    {{ 'add_images' | trans }}
-                    </div>
-                {% else %}
-                    <img src='{{ asset('bundles/nacholibrerichuploader/img/upload.png') }}' class='uploadImg' />
-                    <div class='slog'>
-                    {{ 'add_image' | trans }}
-                </div>
-                {% endif %}
+        <div class='main_sortable_images nacholibre_{{ form.vars.name }} size-{{ size }}' data-multiple='{{ multiple }}' data-entity='{{ entity_class }}'>
+            {{ form_errors(form) }}
+
+            <div class="uploadErrors alert alert-warning hidden" role="alert">
             </div>
-        </div>
-        <div class='message'>
-            <div>
-                <span>!</span> {{ 'changes_after_save' | trans }}
+
+            <div class='nacholibre_ids'>
+                {{ block('hidden_widget') }}
+            </div>
+
+            <div id="sortable" data-name='{{ form.vars.name }}' class='{{ form.vars.name }}'>
+                {% include 'nacholibreRichUploaderBundle::show_image.html.twig' with {images: form.vars.images_data, multiple: multiple, uploadErrors: [], filesWithErrors: 0, configName: configName} %}
+            </div>
+            <div class='rich_image_thumb upload'>
+                <input type="file" name="images" class='imageUploader' id='image_uploader' accept="{{ form.vars.nacholibre_mime_types | join(', ') }}" {% if multiple %}multiple{% endif %}>
+                <div class='selectImages text-center'>
+                    {% if multiple %}
+                        <span class='addI'>+</span>
+                        <div class='slog'>
+                        {{ 'add_files' | trans }}
+                        </div>
+                    {% else %}
+                        <img src='{{ asset('bundles/nacholibrerichuploader/img/upload.png') }}' class='uploadImg' />
+                        <div class='slog'>
+                        {{ 'add_file' | trans }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class='message_visible'>
+                <div>
+                    <span>!</span> {{ 'max_size' | trans }}: <b>{{ form.vars.nacholibre_max_size }}</b> | {{ 'allowed_file_types' | trans }}: <b>{{ form.vars.nacholibre_mime_types | join(', ') }}</b>
+                </div>
+            </div>
+            <div class='message'>
+                <div>
+                    <span>!</span> {{ 'changes_after_save' | trans }}
+                </div>
             </div>
         </div>
     </div>

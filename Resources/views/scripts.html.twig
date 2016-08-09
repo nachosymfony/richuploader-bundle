@@ -28,7 +28,7 @@
             }
 
             realIds.push(id);
-            element.val(realIds.join(','));
+            element.attr('value', realIds.join(','));
         }
 
         function refreshSelect() {
@@ -125,6 +125,12 @@
 
             formData.set('entityClass', entityClass);
 
+            var uploadErrorsContainer = $(prefix + ' .uploadErrors');
+            uploadErrorsContainer.addClass('hidden');
+            uploadErrorsContainer.html('');
+
+            var filesToUpload = this.files.length;
+
             $.ajax({
                 type: 'POST',
                 url: '{{ path('nacholibre.rich_image.upload') }}',
@@ -133,12 +139,36 @@
                 contentType: false,
                 processData: false,
                 success: function(data) {
-                    data = $(data);
+                    data = $('<html />').html(data);
+
+                    var filesWithErrors = data.find('span.file_with_errors').attr('data-num');
+
+                    var errors = [];
+                    data.find('.errors div').each(function(error, val) {
+                        var error = $(this).text();
+                        errors.push(error);
+                    });
+
+                    if (errors.length > 0) {
+                        uploadErrorsContainer.removeClass('hidden');
+
+                        uploadErrorsContainer.append('<div><b>'+filesWithErrors+' {{ 'not_uploaded_correctly' | trans }}:</b></div>');
+
+                        var i = 1;
+                        $(errors).each(function(index, val) {
+                            uploadErrorsContainer.append('<div>{{ 'file' | trans }} '+i+': '+val+'</div>');
+                        });
+                    }
+
+                    if (filesWithErrors == filesToUpload) {
+                        $(prefix + ' .rich_image_thumb.loading').remove();
+                        return;
+                    }
+
                     var currentImagesCount = sortSelector.find('.rich_image_thumb').length;
 
                     //1 because loading box is added and it counts to 1
                     if (currentImagesCount <= 1 && multiple) {
-                        console.log('here');
                         data.find('div.main').removeClass('hidden');
                         data.find('.make_main').addClass('hidden');
                     } else {
@@ -148,19 +178,18 @@
 
                     showMessage();
 
-                    sortSelector.append(data);
+                    sortSelector.append(data.html());
                     $(prefix + ' .rich_image_thumb.loading').remove();
                     sortSelector.sortable('refresh');
 
                     var ids = [];
 
-                    $(data, '.rich_image_thumb').each(function(index) {
+                    data.find('.rich_image_thumb').each(function(index) {
                         var id = $(this).attr('data-id');
 
                         addImageID(idsContainer, id);
                         //appendImageToSelect(parentSelect, id);
                     });
-
                 },
                 error: function(data) {
                     console.log('rich image upload error');

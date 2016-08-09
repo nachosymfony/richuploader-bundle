@@ -26,6 +26,8 @@ class nacholibreRichUploaderExtension extends Extension implements PrependExtens
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
+
+        $container->setParameter('nacholibre_rich_uploader', $config);
     }
 
     public function prepend(ContainerBuilder $container) {

@@ -8,10 +8,20 @@
         vertical-align:top;
         margin-right:9px;
         position:relative;
+        text-align:center;
     }
 
     .rich_image_thumb img.mainThumb {
         width:100%;
+    }
+
+    .rich_image_thumb .fileName {
+        font-size:11px;
+    }
+
+    .rich_image_thumb img.fileThumb {
+        width:40%;
+        margin-top:10%;
     }
 
     .size-xs .rich_image_thumb, .size-xs #sortable .ui-state-highlight {
@@ -207,14 +217,18 @@
         right: 0;
     }
 
-    .main_sortable_images .message {
+    .main_sortable_images .message, .main_sortable_images .message_visible {
         display:none;
         color:#007bdb;
         font-size:12px;
         margin-top:4px;
     }
 
-    .main_sortable_images .message span {
+    .main_sortable_images .message_visible {
+        display:block;
+    }
+
+    .main_sortable_images .message span, .main_sortable_images .message_visible span {
         background-color: #007bdb;
         padding-left:5px;
         padding-right:5px;

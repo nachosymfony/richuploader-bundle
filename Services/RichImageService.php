@@ -7,10 +7,9 @@ class RichImageService {
         $this->em = $em;
     }
 
-    public function removeNotUsed() {
-        exit('work here...');
+    public function removeNotUsed($entityClass) {
         $em = $this->em;
-        $repo = $em->getRepository('nacholibre\RichImageBundle\Entity\RichImage');
+        $repo = $em->getRepository($entityClass);
 
         $now = new \Datetime();
         $yesterday = $now->sub(new \DateInterval('P1D'));
