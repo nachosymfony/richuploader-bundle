@@ -14,10 +14,6 @@
             messageSelector.addClass('visible');
         }
 
-        //function appendImageToSelect(select, id) {
-        //    select.append('<option value="'+id+'" selected="selected">'+id+'</option>');
-        //}
-
         function addImageID(element, id) {
             var ids = element.val();
 
@@ -35,9 +31,6 @@
             sortSelector.each(function(index) {
                 var parent = $(this).parents('.main_sortable_images');
 
-                //var select = parent.find('select');
-                //select.empty();
-
                 var idsContainer = parent.find('.nacholibre_ids input');
                 idsContainer.val('');
 
@@ -53,7 +46,6 @@
                     }
 
                     addImageID(idsContainer, id);
-                    //appendImageToSelect(select, id);
                 });
             });
         }
@@ -178,6 +170,7 @@
 
                     showMessage();
 
+                    //append the uploaded files to the page
                     sortSelector.append(data.html());
                     $(prefix + ' .rich_image_thumb.loading').remove();
                     sortSelector.sortable('refresh');
@@ -188,7 +181,6 @@
                         var id = $(this).attr('data-id');
 
                         addImageID(idsContainer, id);
-                        //appendImageToSelect(parentSelect, id);
                     });
                 },
                 error: function(data) {

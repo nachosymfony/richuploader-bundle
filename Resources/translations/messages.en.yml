@@ -2,10 +2,11 @@ add_files: Click here to add files.
 main: main
 make_main: Make Main
 changes_after_save: Changes will be active after saving.
-add_file: Click here to add file.
+add_file: Click here to upload file.
 image_required: It's required to add image %s
 upload_valid_file_type: Please upload valid file type
 not_uploaded_correctly: files are not uploaded, errors
 file: File
 max_size: Max file size
 allowed_file_types: Allowed file types
+field_required: This field is required

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\MappedSuperclass
  */
-class RichFile {
+class RichFile implements RichFileInterface {
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")

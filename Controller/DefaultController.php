@@ -16,22 +16,17 @@ class DefaultController extends Controller {
      * @Route("/rich_image/upload", name="nacholibre.rich_image.upload")
      */
     public function uploadAction(Request $request) {
-        $translator = $this->get('translator');
         $em = $this->getDoctrine()->getManager();
+        $translator = $this->get('translator');
         $validator = $this->get('validator');
+        $helper = $this->get('nacholibre.rich_uploader.helper');
+        $imagine = $this->get('nacholibre.rich_uploader.imagine');
 
-        $images = [];
+        $em = $this->getDoctrine()->getManager();
 
         $entityClass = $request->get('entityClass');
-
-		$reader = new AnnotationReader();
-		$metaData = $reader->getClassAnnotation(new \ReflectionClass(new $entityClass), 'nacholibre\RichUploaderBundle\Annotation\RichUploader');
-
-        $configName = $metaData->config;
-
-        $richUploaderConfig = $this->container->getParameter('nacholibre_rich_uploader');
-
-        $config = $richUploaderConfig['mappings'][$configName];
+        $config = $helper->getEntityClassConfiguration($entityClass);
+        $configName = $helper->getEntityConfigName($entityClass);
 
         $uploadDirectory = $config['upload_destination'];
 
@@ -41,6 +36,8 @@ class DefaultController extends Controller {
             'mimeTypesMessage' => $translator->trans('upload_valid_file_type'),
         ];
 
+        // * means all files can be uplaoded, so remove mimeTypes and
+        // mimeTypesMessage from the file contraint options
         if (count($config['mime_types']) == 1 && in_array('*', $config['mime_types'])) {
             unset($fileOptions['mimeTypes']);
             unset($fileOptions['mimeTypesMessage']);
@@ -48,26 +45,16 @@ class DefaultController extends Controller {
 
         $validatorConstraint = new \Symfony\Component\Validator\Constraints\File($fileOptions);
 
-        if (extension_loaded('gd') && function_exists('gd_info')) {
-            $imagine = new \Imagine\Gd\Imagine();
-        } else if (extension_loaded('imagick')) {
-            $imagine = new Imagine\Imagick\Imagine();
-        } else if (extension_loaded('gmagick')) {
-            $imagine = new Imagine\Gmagick\Imagine();
-        } else {
-            throw $this->createException('There is no available image manipulation library for the thumbnail generation. You should have gd, imagick or gmagick installed.');
-        }
-
-        $imagineMode = \Imagine\Image\ImageInterface::THUMBNAIL_OUTBOUND;
-        $imagineSize = new \Imagine\Image\Box(160, 160);
-
-        $filesWithErrors = 0;
         $uploadErrors = [];
+        $images = [];
+        $filesWithErrors = 0;
+
         foreach($request->files as $file) {
             $errors = $validator->validate($file, $validatorConstraint);
 
             if (count($errors)) {
                 $filesWithErrors++;
+
                 foreach($errors as $error) {
                     $uploadErrors[] = $error;
                 }
@@ -83,7 +70,6 @@ class DefaultController extends Controller {
                 $image = new $entityClass;
 
                 $image->setFileName($fileName);
-
                 $image->setPosition(0);
                 $image->setHooked(false);
                 $image->setMimeType($mimeType);
@@ -91,12 +77,8 @@ class DefaultController extends Controller {
 
                 //check if file is image and generate thumbnail
                 if ($mimeType && strpos($mimeType, 'image/') !== false) {
-                    $imagine->open($fileLocationAfterUpload)
-                        ->thumbnail($imagineSize, $imagineMode)
-                        ->save($uploadDirectory . '/thumb_'. $fileName)
-                    ;
+                    $imagine->createThumbnail($fileLocationAfterUpload, $uploadDirectory . '/thumb_'. $fileName);
                 }
-
 
                 $images[] = $image;
 

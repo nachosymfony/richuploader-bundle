@@ -16,24 +16,6 @@ class HelperExtension extends \Twig_Extension {
         ];
     }
 
-    private function getClassConfig($configName) {
-        //$reader = new AnnotationReader();
-        //$data = $reader->getClassAnnotations(new \ReflectionClass($obj));
-
-        //$configName = null;
-        //foreach($data as $aObj) {
-        //    if (get_class($aObj) == 'nacholibre\RichUploaderBundle\Annotation\RichUploader') {
-        //        $configName = $aObj->config;
-        //    }
-        //}
-
-        $richUploaderConfig = $this->container->getParameter('nacholibre_rich_uploader');
-
-        $config = $richUploaderConfig['mappings'][$configName];
-
-        return $config;
-    }
-
     public function thumb($obj, $configName) {
         $src = $this->src($obj, $configName);
         $filename = $obj->getFileName();
@@ -46,8 +28,10 @@ class HelperExtension extends \Twig_Extension {
         return implode('/', $parts);
     }
 
-    public function src($obj, $configName=false) {
-        $config = $this->getClassConfig($configName);
+    public function src($obj, $configName) {
+        $helper = $this->container->get('nacholibre.rich_uploader.helper');
+
+        $config = $helper->getParameterConfig($configName);
 
         $uriPrefix = $config['uri_prefix'];
 

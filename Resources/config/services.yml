@@ -5,13 +5,27 @@ services:
         tags:
             - { name: form.type }
 
-    nacholibre.rich_image.service:
+    nacholibre.rich_uploader.service:
         class: nacholibre\RichUploaderBundle\Services\RichImageService
         arguments: ["@doctrine.orm.entity_manager"]
 
-    app.helper_extension:
+    nacholibre.rich_uploader.helper_extension:
         class: nacholibre\RichUploaderBundle\Twig\HelperExtension
         public: false
         arguments: ['@service_container']
         tags:
             - { name: twig.extension }
+
+    nacholibre.rich_uploader.helper:
+        class: nacholibre\RichUploaderBundle\Services\Helper
+        arguments: ['@service_container']
+
+    nacholibre.rich_uploader.imagine:
+        class: nacholibre\RichUploaderBundle\Services\Imagine
+        arguments: ['@service_container']
+
+    nacholibre.rich_uploader.remove_subscriber:
+        class: nacholibre\RichUploaderBundle\EventListener\RemoveSubscriber
+        arguments: ['@service_container']
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
