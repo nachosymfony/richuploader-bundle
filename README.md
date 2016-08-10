@@ -9,6 +9,9 @@ composer require liip/imagine-bundle
 ```
 `liip/imagine-bundle` is used to create the thumbnails of uploaded images.
 
+### Step 1.1 - Assets
+Make sure you have jquery and jqueryui added to the page where you want to use the uploader.
+
 ### Step 2 - Add modules in AppKernel.php
 
 ```
