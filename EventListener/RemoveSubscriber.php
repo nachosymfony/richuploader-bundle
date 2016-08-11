@@ -45,14 +45,14 @@ class RemoveSubscriber implements EventSubscriber {
     public function index(LifecycleEventArgs $args) {
         $file = $args->getEntity();
 
-        $helper = $this->container->get('nacholibre.rich_uploader.helper');
-
-        $config = $helper->getEntityClassConfiguration(get_class($file));
-        $uploadDestination = $config['upload_destination'];
-
-        $fs = new Filesystem();
-
         if ($file instanceof RichFileInterface) {
+            $helper = $this->container->get('nacholibre.rich_uploader.helper');
+
+            $config = $helper->getEntityClassConfiguration(get_class($file));
+            $uploadDestination = $config['upload_destination'];
+
+            $fs = new Filesystem();
+
             $filename = $file->getFileName();
             $filenameFull = $uploadDestination . '/'. $filename;
 
