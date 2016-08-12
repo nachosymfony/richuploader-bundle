@@ -135,9 +135,12 @@ class RichUploaderType extends AbstractType {
 
                     $position++;
                 }
-
-                $em->flush();
+            } else {
+                $files->setHooked(true);
+                $em->persist($files);
             }
+
+            $em->flush();
         });
     }
 
