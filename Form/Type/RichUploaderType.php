@@ -118,10 +118,12 @@ class RichUploaderType extends AbstractType {
 
             if ($options['multiple'] && $options['required'] && count($files) == 0) {
                 $event->getForm()->addError(new FormError($translator->trans('field_required')));
+                return;
             }
 
             if ($options['multiple'] == false && $options['required'] && !$files) {
                 $event->getForm()->addError(new FormError($translator->trans('field_required')));
+                return;
             }
 
             // if multiple is false, $files is actually single RichFile, not an
