@@ -36,9 +36,6 @@ class AppKernel extends Kernel
 }
 ```
 
-#### Step 2.1 - Install static assets
-`php app/console assets:install --symlink --relative` or `php bin/console` for 3.0.
-
 ### Step 3 - Register bundle routing
 ```
 # app/config/routing.yml
@@ -60,6 +57,9 @@ nacholibre_rich_uploader:
             #mime_types: ['image/*']
             max_size: 5M
 ```
+
+#### Step 4.1 - Install static assets
+`php app/console assets:install --symlink --relative` or `php bin/console` for 3.0.
 
 ### Step 5 - Create your Entity
 You need to extend `RichFile` entity.
