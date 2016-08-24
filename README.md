@@ -12,9 +12,6 @@ composer require liip/imagine-bundle
 ### Step 1.1 - Assets
 Make sure you have jquery and jqueryui added to the page where you want to use the uploader.
 
-### Step 1.2 - Install static assets
-`php app/console assets:install --symlink --relative` or `php bin/console` for 3.0.
-
 ### Step 2 - Add modules in AppKernel.php
 
 ```
@@ -38,6 +35,9 @@ class AppKernel extends Kernel
     // ...
 }
 ```
+
+#### Step 2.1 - Install static assets
+`php app/console assets:install --symlink --relative` or `php bin/console` for 3.0.
 
 ### Step 3 - Register bundle routing
 ```
@@ -172,3 +172,8 @@ class ProductType extends AbstractType
     }
 }
 ```
+
+#Misc
+To get the link to the actual file, use:
+
+`nacholibre_rich_uploader_src(fileEntity, 'default')`
