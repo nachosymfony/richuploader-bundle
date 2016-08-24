@@ -51,7 +51,7 @@ class RichUploaderType extends AbstractType {
         $repo = $em->getRepository($options['entity_class']);
 
         $ids = explode(',', $view->vars['data']);
-        $images = $repo->findById($ids);
+        $images = $repo->findById($ids, ['position' => 'ASC']);
 
         $config = $helper->getEntityClassConfiguration($options['entity_class']);
         $configName = $helper->getEntityConfigName($options['entity_class']);
@@ -91,7 +91,10 @@ class RichUploaderType extends AbstractType {
             function ($textAsFiles) use ($repo, $options) {
                 $ids = explode(',', $textAsFiles);
 
-                $files = $repo->findById($ids);
+                $files = [];
+                foreach($ids as $id) {
+                    $files[] = $repo->findOneById($id);
+                }
 
                 if ($options['multiple'] == false) {
                     if (count($files) > 0) {
