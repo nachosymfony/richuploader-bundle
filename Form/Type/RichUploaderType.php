@@ -133,6 +133,10 @@ class RichUploaderType extends AbstractType {
             // array, so we don't need to iterate over it.
             if ($options['multiple'] === true) {
                 foreach($files as $file) {
+                    if (!$file) {
+                        return;
+                    }
+
                     $file->setPosition($position);
                     $file->setHooked(true);
 
