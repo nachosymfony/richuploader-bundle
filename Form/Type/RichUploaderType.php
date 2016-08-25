@@ -90,7 +90,11 @@ class RichUploaderType extends AbstractType {
             },
             function ($textAsFiles) use ($repo, $options) {
                 if ($textAsFiles == '') {
-                    return null;
+                    if ($options['multiple']) {
+                        return [];
+                    } else {
+                        return null;
+                    }
                 }
 
                 $ids = explode(',', $textAsFiles);
