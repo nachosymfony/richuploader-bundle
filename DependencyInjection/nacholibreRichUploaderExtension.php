@@ -42,7 +42,7 @@ class nacholibreRichUploaderExtension extends Extension implements PrependExtens
                 case 'twig':
                     $container->prependExtensionConfig(
                         $name,
-                        array('form' => array('resources' => array($this->formTypeTemplate)))
+                        ['form_themes' => [$this->formTypeTemplate]]
                     );
                     break;
             }
